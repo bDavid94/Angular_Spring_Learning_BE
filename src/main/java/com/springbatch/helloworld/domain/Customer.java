@@ -3,11 +3,8 @@ package com.springbatch.helloworld.domain;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.springframework.data.jpa.repository.Temporal;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Date;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 public class Customer {
@@ -23,34 +20,45 @@ public class Customer {
     @Column(name= "BIRTH_DATE")
     private Date birthDate;
 
-    public Customer(String firstName, String lastName, Date birthDate) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
-    }
+    private String email;
+
+    private int rating;
+
+    @ElementCollection
+    private List<String> friends;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders = new ArrayList<>();
 
     public Customer() {
         // used by jpa
     }
 
-    @Override
-    public String toString() {
-        return "Customer{" +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", birthDate=" + birthDate +
-                '}';
+    public Customer(String firstName, String lastName, Date birthDate, String email, int rating) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.rating = rating;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
+    public long getId() { return id; }
 
-    public String getLastName() {
-        return lastName;
-    }
+    public void addOrder(Order order) { this.orders.add(order); }
 
-    public Date getBirthDate() {
-        return birthDate;
-    }
+    public void addFriend(String name) { this.friends.add(name); }
+
+    public String getFirstName() { return firstName; }
+
+    public String getLastName() { return lastName; }
+
+    public Date getBirthDate() { return birthDate; }
+
+    public String getEmail() { return email; }
+
+    public int getRating() { return rating; }
+
+    public List<String> getFriends() { return new ArrayList<>(friends); }
+
+    public List<Order> getOrders() { return new ArrayList<>(orders); }
 }
